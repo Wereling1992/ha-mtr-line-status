@@ -5,6 +5,8 @@ from __future__ import annotations
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -20,15 +22,26 @@ async def async_setup_entry(
     """Set up MTR Line Status sensors based on a config entry."""
     coordinator: MTRDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    entities = [
-        MTRLineSensor(coordinator, code, name_en, name_zh, color)
+    entities: list[SensorEntity] = [
+        MTRLineSensor(coordinator, entry, code, name_en, name_zh, color)
         for code, (name_en, name_zh, color) in LINES.items()
     ]
 
-    # Overall status sensor
-    entities.append(MTROverallSensor(coordinator))
+    # lastBuildDate as a diagnostic sensor
+    entities.append(MTRLastUpdateSensor(coordinator, entry))
 
     async_add_entities(entities)
+
+
+def _device_info(entry: ConfigEntry) -> DeviceInfo:
+    """Return the device info for the MTR integration."""
+    return DeviceInfo(
+        identifiers={(DOMAIN, entry.entry_id)},
+        name="MTR Line Status",
+        manufacturer="MTR Corporation",
+        model="Line Status Feed",
+        configuration_url="https://www.mtr.com.hk/alert/ryg_line_status_lite.xml",
+    )
 
 
 class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
@@ -39,6 +52,7 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
     def __init__(
         self,
         coordinator: MTRDataUpdateCoordinator,
+        entry: ConfigEntry,
         code: str,
         name_en: str,
         name_zh: str,
@@ -47,10 +61,11 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._code = code
-        self._attr_unique_id = f"mtr_line_{code.lower()}"
+        self._attr_unique_id = f"{entry.entry_id}_line_{code.lower()}"
         self._attr_name = f"{name_en} ({name_zh})"
         self._attr_icon = "mdi:subway"
         self._default_color = color
+        self._attr_device_info = _device_info(entry)
 
     @property
     def native_value(self) -> str | None:
@@ -69,7 +84,6 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
             "name_en": line_data.get("name_en"),
             "name_zh": line_data.get("name_zh"),
             "color": line_data.get("color", self._default_color),
-            "last_update": self.coordinator.data.get("last_update"),
         }
 
     @property
@@ -85,43 +99,25 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         return "mdi:subway"
 
 
-class MTROverallSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
-    """Overall MTR network status sensor."""
+class MTRLastUpdateSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
+    """Sensor for the lastBuildDate from MTR feed."""
 
     _attr_has_entity_name = True
-    _attr_name = "Overall Status"
-    _attr_unique_id = "mtr_overall_status"
-    _attr_icon = "mdi:subway"
+    _attr_name = "Last Update"
+    _attr_icon = "mdi:clock-outline"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
-    def __init__(self, coordinator: MTRDataUpdateCoordinator) -> None:
+    def __init__(
+        self,
+        coordinator: MTRDataUpdateCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
         """Initialize."""
         super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_last_update"
+        self._attr_device_info = _device_info(entry)
 
     @property
-    def native_value(self) -> str:
-        """Return overall status."""
-        lines = self.coordinator.data.get("lines", {})
-        statuses = [line.get("status") for line in lines.values()]
-
-        if "red" in statuses:
-            return "red"
-        if "yellow" in statuses:
-            return "yellow"
-        if all(s == "green" for s in statuses):
-            return "green"
-        return "unknown"
-
-    @property
-    def extra_state_attributes(self) -> dict:
-        """Return extra attributes."""
-        lines = self.coordinator.data.get("lines", {})
-        disrupted = [
-            f"{data['name_zh']} ({code})"
-            for code, data in lines.items()
-            if data.get("status") in ("yellow", "red")
-        ]
-        return {
-            "last_update": self.coordinator.data.get("last_update"),
-            "disrupted_lines": disrupted,
-            "disrupted_count": len(disrupted),
-        }
+    def native_value(self) -> str | None:
+        """Return the last update timestamp from the feed."""
+        return self.coordinator.data.get("last_update")
