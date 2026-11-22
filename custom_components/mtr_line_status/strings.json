@@ -15,7 +15,10 @@
       "init": {
         "title": "MTR Line Status Options",
         "data": {
-          "scan_interval": "Update interval (seconds)"
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "scan_interval": "How often to refresh line status from MTR (30–600 seconds). Default is 60."
         }
       }
     }

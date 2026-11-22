@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "港鐵線路狀態",
+        "description": "監察香港港鐵各線實時狀態（綠 / 黃 / 紅）。"
+      }
+    },
+    "abort": {
+      "already_configured": "港鐵線路狀態已新增，唔可以重複加入。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "港鐵線路狀態選項",
+        "data": {
+          "scan_interval": "更新間隔"
+        },
+        "data_description": {
+          "scan_interval": "每隔幾多秒由港鐵更新一次線路狀態（30–600 秒）。預設 60 秒。"
+        }
+      }
+    }
+  }
+}

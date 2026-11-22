@@ -1,12 +1,12 @@
 {
   "domain": "mtr_line_status",
   "name": "MTR Line Status",
-  "codeowners": [],
+  "codeowners": ["@Wereling1992"],
   "config_flow": true,
-  "documentation": "https://github.com/your-username/ha-mtr-line-status",
+  "documentation": "https://github.com/Wereling1992/ha-mtr-line-status",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/your-username/ha-mtr-line-status/issues",
+  "issue_tracker": "https://github.com/Wereling1992/ha-mtr-line-status/issues",
   "requirements": [],
-  "version": "1.1.0"
+  "version": "1.1.3"
 }
