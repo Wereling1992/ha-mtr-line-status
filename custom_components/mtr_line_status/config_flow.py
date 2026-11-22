@@ -26,29 +26,19 @@ class MTRConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._abort_if_unique_id_configured()
             return self.async_create_entry(title="MTR Line Status", data={})
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema({}),
-            description_placeholders={
-                "description": "This integration monitors the real-time status of MTR lines in Hong Kong."
-            },
-        )
+        return self.async_show_form(step_id="user", data_schema=vol.Schema({}))
 
     @staticmethod
     @callback
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
-        """Get the options flow for this handler."""
-        return MTROptionsFlow(config_entry)
+        """Create the options flow."""
+        return MTROptionsFlowHandler()
 
 
-class MTROptionsFlow(config_entries.OptionsFlow):
-    """Handle options."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
+class MTROptionsFlowHandler(config_entries.OptionsFlowWithReload):
+    """Handle options (auto-reloads on change)."""
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
