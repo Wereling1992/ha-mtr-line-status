@@ -1,0 +1,23 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "MTR Line Status",
+        "description": "Monitor real-time status of Hong Kong MTR lines (Green / Yellow / Red)."
+      }
+    },
+    "abort": {
+      "already_configured": "MTR Line Status is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "MTR Line Status Options",
+        "data": {
+          "scan_interval": "Update interval (seconds)"
+        }
+      }
+    }
+  }
+}
