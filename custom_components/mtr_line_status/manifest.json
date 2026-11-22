@@ -1,0 +1,11 @@
+{
+  "domain": "mtr_line_status",
+  "name": "MTR Line Status",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/your-username/ha-mtr-line-status",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/your-username/ha-mtr-line-status/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
