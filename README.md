@@ -6,10 +6,6 @@
 
 Monitor the real-time status of Hong Kong MTR lines in Home Assistant.
 
-Data source: [MTR Line Status](https://www.mtr.com.hk/alert/ryg_line_status_lite.xml)
-
-Official status page: [MTR Service Status](https://www.mtr.com.hk/en/customer/main/service_status.html)
-
 ## Features
 
 - Supports all 10 major MTR lines
@@ -18,7 +14,6 @@ Official status page: [MTR Service Status](https://www.mtr.com.hk/en/customer/ma
 - Last Update diagnostic sensor
 - UI-based setup (Config Flow)
 - Configurable update interval (default: 60 seconds)
-- HACS support
 
 ## Status Meanings
 
@@ -106,12 +101,12 @@ automation:
       - service: notify.mobile_app_your_phone
         data:
           title: "MTR Alert"
-          message: "Tseung Kwan O Line status: {{ trigger.to_state.state }}"
+          message: "Tseung Kwan O Line Service Disruption"
 ```
 
 ## Notes
 
-- Data is fetched from the official MTR XML feed. Update frequency depends on the source.
+- Update frequency depends on the source.
 - It is recommended not to set the update interval lower than 30 seconds.
 - If a sensor shows `unknown`, the data could not be retrieved temporarily.
 
