@@ -27,9 +27,7 @@ async def async_setup_entry(
         for code, (name_en, name_zh, color) in LINES.items()
     ]
 
-    # lastBuildDate as a diagnostic sensor
     entities.append(MTRLastUpdateSensor(coordinator, entry))
-
     async_add_entities(entities)
 
 
@@ -62,9 +60,10 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         super().__init__(coordinator)
         self._code = code
         self._attr_unique_id = f"{entry.entry_id}_line_{code.lower()}"
-        self._attr_name = f"{name_en} ({name_zh})"
+        self._attr_name = name_en
         self._attr_icon = "mdi:subway"
         self._default_color = color
+        self._name_zh = name_zh
         self._attr_device_info = _device_info(entry)
 
     @property
@@ -82,7 +81,7 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         return {
             "line_code": self._code,
             "name_en": line_data.get("name_en"),
-            "name_zh": line_data.get("name_zh"),
+            "name_zh": line_data.get("name_zh", self._name_zh),
             "color": line_data.get("color", self._default_color),
         }
 
