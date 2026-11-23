@@ -21,9 +21,11 @@ class MTRConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step."""
+        # Abort immediately if already configured (before showing the form)
+        await self.async_set_unique_id(DOMAIN)
+        self._abort_if_unique_id_configured()
+
         if user_input is not None:
-            await self.async_set_unique_id(DOMAIN)
-            self._abort_if_unique_id_configured()
             scan_interval = user_input.get("scan_interval", DEFAULT_SCAN_INTERVAL)
             return self.async_create_entry(
                 title="MTR Line Status",
