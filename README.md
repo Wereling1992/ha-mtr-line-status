@@ -1,100 +1,95 @@
 # MTR Line Status for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![GitHub release](https://img.shields.io/github/release/Wereling1992/ha-mtr-line-status.svg)](https://github.com/Wereling1992/ha-mtr-line-status/releases)
 
 Monitor the real-time status of Hong Kong MTR lines (Green / Yellow / Red) in Home Assistant.
 
-數據來源： [MTR Line Status](https://www.mtr.com.hk/alert/ryg_line_status_lite.xml)
+Data source: [MTR Line Status](https://www.mtr.com.hk/alert/ryg_line_status_lite.xml)
 
 ## Features
 
-- 支援全部 10 條主要港鐵線路
-- 每條線獨立 Sensor
-- Overall Status 總體狀態 Sensor
-- UI 設定（Config Flow），無需寫 YAML
-- 可自訂更新間隔
-- 支援 HACS
+- All 10 major MTR lines
+- One sensor per line
+- Last Update diagnostic sensor (`lastBuildDate`)
+- UI setup (Config Flow), no YAML required
+- Configurable update interval
+- HACS support
 
 ## Supported Lines
 
-| Code | English Name              | 中文名稱     |
-|------|---------------------------|--------------|
-| TWL  | Tsuen Wan Line            | 荃灣綫       |
-| KTL  | Kwun Tong Line            | 觀塘綫       |
-| ISL  | Island Line               | 港島綫       |
-| SIL  | South Island Line         | 南港島綫     |
-| TKL  | Tseung Kwan O Line        | 將軍澳綫     |
-| TCL  | Tung Chung Line           | 東涌綫       |
-| DRL  | Disneyland Resort Line    | 迪士尼綫     |
-| AEL  | Airport Express           | 機場快綫     |
-| EAL  | East Rail Line            | 東鐵綫       |
-| TML  | Tuen Ma Line              | 屯馬綫       |
+| Code | Line Name                 |
+|------|---------------------------|
+| TWL  | Tsuen Wan Line            |
+| KTL  | Kwun Tong Line            |
+| ISL  | Island Line               |
+| SIL  | South Island Line         |
+| TKL  | Tseung Kwan O Line        |
+| TCL  | Tung Chung Line           |
+| DRL  | Disneyland Resort Line    |
+| AEL  | Airport Express           |
+| EAL  | East Rail Line            |
+| TML  | Tuen Ma Line              |
 
 ## Installation
 
 ### HACS (Recommended)
 
-1. 打開 HACS → Integrations
-2. 右上角 ⋮ → **Custom repositories**
-3. 輸入你的 GitHub repo 網址
-4. Category 選擇 **Integration**
-5. 搜尋 **MTR Line Status** → Download
-6. 重啟 Home Assistant
-7. 去 **Settings → Devices & Services → Add Integration** → 搜尋 **MTR Line Status**
+1. Open HACS → Integrations
+2. Menu (⋮) → **Custom repositories**
+3. Add:
+   ```
+   https://github.com/Wereling1992/ha-mtr-line-status
+   ```
+   Category: **Integration**
+4. Search **MTR Line Status** → Download
+5. Restart Home Assistant
+6. Go to **Settings → Devices & Services → Add Integration** → search **MTR Line Status**
 
 ### Manual Installation
 
-1. 下載本 zip
-2. 解壓後將 `custom_components/mtr_line_status` 資料夾複製到你的 Home Assistant `config/custom_components/` 目錄
-3. 重啟 Home Assistant
-4. 新增 Integration
+1. Download this repo or the [latest Release](https://github.com/Wereling1992/ha-mtr-line-status/releases)
+2. Copy `custom_components/mtr_line_status` into your Home Assistant `config/custom_components/` folder
+3. Restart Home Assistant
+4. Add the integration from the UI
 
 ## Configuration
 
-安裝後直接透過 UI 新增即可，無需任何 YAML。
-
-可在 Integration 的 **Configure** 調整更新間隔（預設 60 秒）。
+No YAML needed. After install, use **Configure** on the integration to change the update interval (default 60 seconds).
 
 ## Entities
 
-安裝後會自動產生：
+Creates a device **MTR Line Status** with:
 
-- `sensor.mtr_line_status_overall_status`（總體狀態）
-- 每條線一個 sensor
+**Sensors**
+- One sensor per line (`green` / `yellow` / `red` / `unknown`)
 
-### Sensor States
+**Diagnostic**
+- Last Update (from the feed `lastBuildDate`)
 
-- `green`：正常
-- `yellow`：輕微延誤 / 服務調整
-- `red`：嚴重延誤 / 暫停服務
-- `unknown`：無法取得資料
-
-### Attributes
-
-每條線的 sensor 都有以下 attributes：
+### Attributes (per line)
 
 - `line_code`
 - `name_en`
 - `name_zh`
 - `color`
-- `last_update`
 
 ## Example Automation
 
 ```yaml
 automation:
-  - alias: "MTR 將軍澳綫有延誤通知"
+  - alias: "Notify on Tseung Kwan O Line disruption"
     trigger:
       - platform: state
-        entity_id: sensor.mtr_line_status_tseung_kwan_o_line_將軍澳綫
+        entity_id: sensor.mtr_line_status_tseung_kwan_o_line
         to:
           - "yellow"
           - "red"
     action:
       - service: notify.mobile_app_your_phone
         data:
-          title: "港鐵延誤通知"
-          message: "將軍澳綫目前狀態：{{ trigger.to_state.state }}"
+          title: "MTR Alert"
+          message: "Tseung Kwan O Line status: {{ trigger.to_state.state }}"
 ```
 
 ## License

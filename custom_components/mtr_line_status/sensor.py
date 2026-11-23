@@ -13,6 +13,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN, LINES
 from .coordinator import MTRDataUpdateCoordinator
 
+GITHUB_URL = "https://github.com/Wereling1992/ha-mtr-line-status"
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -23,8 +25,8 @@ async def async_setup_entry(
     coordinator: MTRDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     entities: list[SensorEntity] = [
-        MTRLineSensor(coordinator, entry, code, name_en, name_zh, color)
-        for code, (name_en, name_zh, color) in LINES.items()
+        MTRLineSensor(coordinator, entry, code, name_en, color)
+        for code, (name_en, _name_zh, color) in LINES.items()
     ]
 
     entities.append(MTRLastUpdateSensor(coordinator, entry))
@@ -38,7 +40,7 @@ def _device_info(entry: ConfigEntry) -> DeviceInfo:
         name="MTR Line Status",
         manufacturer="MTR Corporation",
         model="Line Status Feed",
-        configuration_url="https://www.mtr.com.hk/alert/ryg_line_status_lite.xml",
+        configuration_url=GITHUB_URL,
     )
 
 
@@ -53,7 +55,6 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         entry: ConfigEntry,
         code: str,
         name_en: str,
-        name_zh: str,
         color: str,
     ) -> None:
         """Initialize the sensor."""
@@ -63,7 +64,6 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         self._attr_name = name_en
         self._attr_icon = "mdi:subway"
         self._default_color = color
-        self._name_zh = name_zh
         self._attr_device_info = _device_info(entry)
 
     @property
@@ -81,7 +81,6 @@ class MTRLineSensor(CoordinatorEntity[MTRDataUpdateCoordinator], SensorEntity):
         return {
             "line_code": self._code,
             "name_en": line_data.get("name_en"),
-            "name_zh": line_data.get("name_zh", self._name_zh),
             "color": line_data.get("color", self._default_color),
         }
 
