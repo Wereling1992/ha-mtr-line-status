@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from datetime import timedelta
 from typing import Any
 
+import aiohttp
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -32,7 +33,10 @@ class MTRDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from MTR."""
         try:
-            async with self._session.get(STATUS_URL, timeout=15) as response:
+            async with self._session.get(
+                STATUS_URL,
+                timeout=aiohttp.ClientTimeout(total=15),
+            ) as response:
                 if response.status != 200:
                     raise UpdateFailed(f"Error fetching data: HTTP {response.status}")
                 text = await response.text()

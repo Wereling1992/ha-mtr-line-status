@@ -3,7 +3,13 @@
     "step": {
       "user": {
         "title": "MTR Line Status",
-        "description": "Monitor real-time status of Hong Kong MTR lines (Green / Yellow / Red)."
+        "description": "This will add sensors for all major Hong Kong MTR lines (Green / Yellow / Red status). You can change the update interval later in Options.",
+        "data": {
+          "scan_interval": "Update interval (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "How often to refresh line status from MTR. Range: 30–600. Default: 60."
+        }
       }
     },
     "abort": {
@@ -15,10 +21,10 @@
       "init": {
         "title": "Options",
         "data": {
-          "scan_interval": "Update interval"
+          "scan_interval": "Update interval (seconds)"
         },
         "data_description": {
-          "scan_interval": "How often to refresh line status from MTR (30–600 seconds). Default is 60."
+          "scan_interval": "How often to refresh line status from MTR. Range: 30–600. Default: 60."
         }
       }
     }

@@ -24,9 +24,24 @@ class MTRConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             await self.async_set_unique_id(DOMAIN)
             self._abort_if_unique_id_configured()
-            return self.async_create_entry(title="MTR Line Status", data={})
+            scan_interval = user_input.get("scan_interval", DEFAULT_SCAN_INTERVAL)
+            return self.async_create_entry(
+                title="MTR Line Status",
+                data={},
+                options={"scan_interval": scan_interval},
+            )
 
-        return self.async_show_form(step_id="user", data_schema=vol.Schema({}))
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        "scan_interval",
+                        default=DEFAULT_SCAN_INTERVAL,
+                    ): vol.All(vol.Coerce(int), vol.Range(min=30, max=600)),
+                }
+            ),
+        )
 
     @staticmethod
     @callback

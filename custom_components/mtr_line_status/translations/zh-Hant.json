@@ -2,23 +2,29 @@
   "config": {
     "step": {
       "user": {
-        "title": "港鐵線路狀態",
-        "description": "監察香港港鐵各線實時狀態（綠 / 黃 / 紅）。"
+        "title": "MTR Line Status",
+        "description": "This will add sensors for all major Hong Kong MTR lines (Green / Yellow / Red status). You can change the update interval later in Options.",
+        "data": {
+          "scan_interval": "Update interval (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "How often to refresh line status from MTR. Range: 30–600. Default: 60."
+        }
       }
     },
     "abort": {
-      "already_configured": "港鐵線路狀態已新增，唔可以重複加入。"
+      "already_configured": "MTR Line Status is already configured."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "港鐵線路狀態選項",
+        "title": "Options",
         "data": {
-          "scan_interval": "更新間隔"
+          "scan_interval": "Update interval (seconds)"
         },
         "data_description": {
-          "scan_interval": "每隔幾多秒由港鐵更新一次線路狀態（30–600 秒）。預設 60 秒。"
+          "scan_interval": "How often to refresh line status from MTR. Range: 30–600. Default: 60."
         }
       }
     }
