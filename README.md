@@ -4,17 +4,32 @@
 [![GitHub release](https://img.shields.io/github/release/Wereling1992/ha-mtr-line-status.svg)](https://github.com/Wereling1992/ha-mtr-line-status/releases)
 [![License](https://img.shields.io/github/license/Wereling1992/ha-mtr-line-status.svg)](LICENSE)
 
-Monitor the real-time status (Green / Yellow / Red) of Hong Kong MTR lines in Home Assistant.
+Monitor the real-time status of Hong Kong MTR lines in Home Assistant.
+
+Data source: [MTR Line Status](https://www.mtr.com.hk/alert/ryg_line_status_lite.xml)
+
+Official status page: [MTR Service Status](https://www.mtr.com.hk/en/customer/main/service_status.html)
 
 ## Features
 
 - Supports all 10 major MTR lines
-- One sensor per line (`green` / `yellow` / `red` / `unknown`)
-- Provides both English and Chinese line names (`name_en` / `name_zh`)
+- One sensor per line
+- Provides English and Chinese line names (`name_en` / `name_zh`)
 - Last Update diagnostic sensor
-- Fully UI-based setup (Config Flow) — no YAML required
+- UI-based setup (Config Flow)
 - Configurable update interval (default: 60 seconds)
 - HACS support
+
+## Status Meanings
+
+Based on the official MTR legend:
+
+| Status   | Meaning                                                                 |
+|----------|-------------------------------------------------------------------------|
+| `green`  | Normal Service                                                          |
+| `yellow` | Service Delay – Additional waiting and travelling time, or service gradually resuming |
+| `red`    | Service Disruption – consider using other transport                     |
+| `unknown`| Unable to retrieve status                                               |
 
 ## Supported Lines
 
@@ -36,7 +51,7 @@ Monitor the real-time status (Green / Yellow / Red) of Hong Kong MTR lines in Ho
 ### HACS (Recommended)
 
 1. Open **HACS** → **Integrations**
-2. Click the three dots (⋮) in the top right → **Custom repositories**
+2. Click the three dots (⋮) → **Custom repositories**
 3. Add the following repository and select category **Integration**:
    ```
    https://github.com/Wereling1992/ha-mtr-line-status
@@ -55,8 +70,6 @@ Monitor the real-time status (Green / Yellow / Red) of Hong Kong MTR lines in Ho
 ## Configuration
 
 After installation, you can change the update interval via the integration's **Configure** option (default is 60 seconds).
-
-No YAML configuration is required.
 
 ## Entities
 
@@ -98,9 +111,9 @@ automation:
 
 ## Notes
 
-- Data is fetched directly from the official MTR XML feed. Update frequency depends on the official source.
-- It is recommended not to set the update interval lower than 30 seconds to avoid excessive requests.
-- If a sensor shows `unknown`, it usually means the data could not be retrieved temporarily.
+- Data is fetched from the official MTR XML feed. Update frequency depends on the source.
+- It is recommended not to set the update interval lower than 30 seconds.
+- If a sensor shows `unknown`, the data could not be retrieved temporarily.
 
 ## License
 
