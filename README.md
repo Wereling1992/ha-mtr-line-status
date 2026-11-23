@@ -10,7 +10,7 @@ Monitor the real-time status of Hong Kong MTR lines in Home Assistant.
 
 - Supports all 10 major MTR lines
 - One sensor per line
-- Provides English and Chinese line names (`name_en` / `name_zh`)
+- Provides English and Chinese line names
 - Last Update diagnostic sensor
 - UI-based setup (Config Flow)
 - Configurable update interval (default: 60 seconds)
