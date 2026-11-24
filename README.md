@@ -24,7 +24,7 @@ Based on the official MTR legend:
 | `green`  | Normal Service                                                          |
 | `yellow` | Service Delay – Additional waiting and travelling time, or service gradually resuming |
 | `red`    | Service Disruption – consider using other transport                     |
-| `unknown`| Unable to retrieve status                                               |
+| `grey`   | Non-service hours                                                       |
 
 ## Supported Lines
 
@@ -72,7 +72,7 @@ The integration creates a device named **MTR Line Status** with the following en
 
 **Sensors**
 - One sensor for each MTR line  
-  Possible states: `green`, `yellow`, `red`, `unknown`
+  Possible states: `green`, `yellow`, `red`, `grey`
 
 **Diagnostic**
 - `sensor.mtr_line_status_last_update` — Timestamp of the last successful data update
